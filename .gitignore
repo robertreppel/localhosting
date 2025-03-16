@@ -1,0 +1,14 @@
+# Docker Compose
+.env
+docker-compose.override.yml
+docker-compose.yml.bak
+*.log
+
+# Caddy
+/data/
+/config/
+
+# OS generated files #
+.DS_Store
+Thumbs.db
+
