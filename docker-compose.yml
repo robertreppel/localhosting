@@ -5,6 +5,13 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
     restart: unless-stopped
+    environment:
+      - N8N_HOST=n8n.contextual.local
+      - N8N_PORT=443 # Or 80, if you are not using HTTPS
+      - N8N_PROTOCOL=https # Or http, if you are not using HTTPS
+      - WEBHOOK_URL=https://n8n.contextual.local/ #Or http if not using https.
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true 
 
   caddy:
     image: caddy:latest
