@@ -1,0 +1,36 @@
+# Pi-hole DNS ad-blocker
+#
+# Ubuntu note: systemd-resolved listens on 127.0.0.53:53 by default, which
+# conflicts with Pi-hole binding to port 53. Before starting, disable the
+# stub listener:
+#
+#   sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
+#   sudo systemctl restart systemd-resolved
+#
+# Then set your router's DNS to this server's IP.
+#
+# Copy .env.example to .env and set PIHOLE_WEBPASSWORD before starting.
+
+services:
+  pihole:
+    image: pihole/pihole:2024.07.0
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"   # DNS
+      - "53:53/udp"   # DNS
+      - "80:80/tcp"   # Web admin UI
+    environment:
+      TZ: UTC
+      WEBPASSWORD: "${PIHOLE_WEBPASSWORD}"
+    volumes:
+      - pihole_data:/etc/pihole
+      - dnsmasq_data:/etc/dnsmasq.d
+    healthcheck:
+      test: ["CMD", "dig", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pihole_data:
+  dnsmasq_data:
